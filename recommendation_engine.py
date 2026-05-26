@@ -3,6 +3,7 @@ Case-Based Reasoning Engine untuk Rekomendasi Rumah
 """
 from typing import List, Dict, Tuple
 import json
+import csv
 from pathlib import Path
 
 class House:
@@ -38,10 +39,45 @@ class RecommendationEngine:
     
     def __init__(self):
         self.houses = []
-        self.load_sample_data()
+        self.load_data()
+    
+    def load_data(self):
+        """Memuat data dari CSV atau sample data"""
+        csv_path = Path(__file__).parent / "jakarta_house.csv"
+        if csv_path.exists():
+            self.load_csv_data(str(csv_path))
+        else:
+            self.load_sample_data()
+    
+    def load_csv_data(self, csv_file: str):
+        """Memuat data rumah dari file CSV"""
+        try:
+            with open(csv_file, 'r', encoding='utf-8') as file:
+                reader = csv.DictReader(file)
+                houses = []
+                for row in reader:
+                    try:
+                        house = House(
+                            id=int(row['index']),
+                            name=f"Rumah {row['district']}",
+                            price=int(row['price']) // 1_000_000,  # Convert to millions
+                            location=row['district'],
+                            bedrooms=int(row['bed_rooms']),
+                            bathrooms=int(row['bath_rooms']),
+                            area=int(row['building_area']),
+                            age=0,  # Data tidak memiliki informasi umur
+                            features=[]
+                        )
+                        houses.append(house)
+                    except (ValueError, KeyError) as e:
+                        continue
+                self.houses = houses
+        except Exception as e:
+            print(f"Error loading CSV: {e}")
+            self.load_sample_data()
     
     def load_sample_data(self):
-        """Memuat data sampel rumah"""
+        """Memuat data sampel rumah sebagai fallback"""
         sample_houses = [
             House(1, "Rumah Mewah Pondok Indah", 2500, "Pondok Indah", 5, 3, 450, 2, 
                   ["kolam renang", "garasi 2 mobil", "taman"]),
