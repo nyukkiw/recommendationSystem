@@ -42,12 +42,14 @@ class RecommendationEngine:
         self.load_data()
     
     def load_data(self):
-        """Memuat data dari CSV atau sample data"""
+        """Memuat data dari file CSV (jakarta_house.csv)"""
         csv_path = Path(__file__).parent / "jakarta_house.csv"
-        if csv_path.exists():
-            self.load_csv_data(str(csv_path))
-        else:
-            self.load_sample_data()
+        if not csv_path.exists():
+            raise FileNotFoundError(
+                f"File 'jakarta_house.csv' tidak ditemukan di {csv_path}. "
+                "Pastikan file CSV sudah ada di folder yang sama dengan script ini."
+            )
+        self.load_csv_data(str(csv_path))
     
     def load_csv_data(self, csv_file: str):
         """Memuat data rumah dari file CSV"""
@@ -73,26 +75,13 @@ class RecommendationEngine:
                         continue
                 self.houses = houses
         except Exception as e:
-            print(f"Error loading CSV: {e}")
-            self.load_sample_data()
+            raise RuntimeError(
+                f"Gagal membaca file CSV: {e}. "
+                "Pastikan format file sudah benar dengan kolom: "
+                "index, price, district, city, bed_rooms, bath_rooms, carport, land_area, building_area"
+            )
     
-    def load_sample_data(self):
-        """Memuat data sampel rumah sebagai fallback"""
-        sample_houses = [
-            House(1, "Rumah Mewah Pondok Indah", 2500, "Pondok Indah", 5, 3, 450, 2, 
-                  ["kolam renang", "garasi 2 mobil", "taman"]),
-            House(2, "Rumah Modern BSD", 1200, "BSD City", 3, 2, 200, 1, 
-                  ["smart home", "dekat sekolah", "keamanan 24 jam"]),
-            House(3, "Rumah Strategis Cibubur", 800, "Cibubur", 3, 1, 150, 5, 
-                  ["dekat stasiun", "lokasi nyaman", "harga terjangkau"]),
-            House(4, "Rumah Cluster Tangerang", 650, "Tangerang", 2, 1, 120, 3, 
-                  ["investasi bagus", "dekat mall", "lokasi ramai"]),
-            House(5, "Rumah Minimalis Jakarta", 1500, "Jakarta Selatan", 4, 2, 280, 4, 
-                  ["dekat taman", "lokasi strategis", "perbaikan baru"]),
-            House(6, "Rumah Kota Bekasi", 550, "Bekasi", 2, 1, 100, 6, 
-                  ["harga murah", "dekat industri", "lokasi baik"]),
-        ]
-        self.houses = sample_houses
+
     
     def calculate_similarity(self, preference: Dict, house: House) -> float:
         """

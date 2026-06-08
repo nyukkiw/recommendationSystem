@@ -1,11 +1,4 @@
 # Sistem Rekomendasi Rumah - Requirements
 # Python 3.7+
 
-# Tkinter biasanya sudah included dengan Python
-# Jika belum terinstall, silahkan install secara manual:
-# - Windows: biasanya sudah included
-# - Linux: pip install python3-tk
-# - macOS: biasanya sudah included
-
-# Tidak ada external dependencies lainnya yang diperlukan
-# Semua menggunakan standard library Python
+customtkinter>=5.0.0

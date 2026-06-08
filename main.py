@@ -1,17 +1,24 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
+"""
+Sistem Rekomendasi Rumah - Main Entry Point
+"""
+import customtkinter as ctk
 from recommendation_engine import RecommendationEngine
 from gui_interface import RecommendationGUI
 
 def main():
-    root = tk.Tk()
+    # Mengatur tema global CustomTkinter agar otomatis mengikuti tema sistem/light mode
+    ctk.set_appearance_mode("light") 
+    ctk.set_default_color_theme("blue")
+
+    # KUNCI UTAMA: Wajib menggunakan ctk.CTk() bukan tk.Tk() standar
+    root = ctk.CTk()
     root.title("Sistem Rekomendasi Rumah")
-    root.geometry("900x700")
+    root.geometry("1000x700") # Ukuran window untuk single page rekomendasi
     
-    # Initialize recommendation engine
+    # Inisialisasi CBR engine
     engine = RecommendationEngine()
     
-    # Create GUI
+    # Membuat GUI Modern
     app = RecommendationGUI(root, engine)
     
     root.mainloop()
